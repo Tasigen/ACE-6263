@@ -1,8 +1,8 @@
 #include <SPI.h>
 #include <MFRC522.h>
 
-#define SS_PIN 10
-#define RST_PIN 9
+#define SS_PIN 5
+#define RST_PIN 22
 
 MFRC522 rfid(SS_PIN, RST_PIN);
 MFRC522::Uid acceptedUid;
@@ -36,7 +36,7 @@ void setup() {
     }
   }
 
-  Serial.println("Access granted. Entering main loop...");
+  Serial.println("Access granted.");
 }
 
 void loop() {

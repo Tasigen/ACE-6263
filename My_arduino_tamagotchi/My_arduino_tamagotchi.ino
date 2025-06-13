@@ -1,42 +1,51 @@
 #include <Adafruit_GFX.h>
 #include <Adafruit_SSD1306.h>
 
-// Libreria per memoria non volatile
-#include <EEPROM.h>
+#include <EEPROM.h>// Library for non volatile memory
 
-// Librerie per sleepmode e watchdog
+// Library for sleepmode or watchdog
 #include <avr/sleep.h>
 #include <avr/power.h>
 #include <avr/wdt.h>
 
-// Libreria per suoni buzzer
+// Libreria for generating cute buzzer sounds
 #include <CuteBuzzerSounds.h>
 
-// Librerie custom per Alegotchi
+// Librares for the tamagatchi code
 #include "Scrolling_menu.h"
 #include "Alegotchi.h"
 #include "Sprites.h"
 
 
 /*
-   Definisco le dimensioni del display, serviranno per creare l'istanza del display
-   e magari riutilizzarle nel codice qualora dovessero servirmi queste informazioni
+   Definition, Instances and objects for the OLED display and game control
 */
 #define SCREEN_WIDTH 128 // OLED display width, in pixels
 #define SCREEN_HEIGHT 64 // OLED display height, in pixels
 
-#define BUZZER_PIN 5
+#define BUZZER_PIN 6
 #define SWITCH_SCREEN 2
-#define LEFT 11
-#define SELECT 12
-#define RIGHT 10
+#define LEFT 3
+#define SELECT 4
+#define RIGHT 5
 
 // Creo istanza del display
 Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT);
 
+//==============================================================================
+//          Library for Serial Communication with ESP32
+//==============================================================================
+/*#include <Wire.h>
+#include <SoftwareSerial.h>
+#define TXD1 8
+#define RXD1 12
+SoftwareSerial mySerial(RXD1, TXD1);*/
+//=============================================================================
+
 void setup() {
 
   Serial.begin(9600);
+  //Wire.begin();                // I2C devices
   Serial.println("BOOT");
 
   //Provo ad inizializzare il display all'indirizzo 0x3C (il tuo potrebbe essere diverso)
@@ -139,11 +148,18 @@ void loop() {
     turnOff();
   }
   else{
-
     stateSelection();
     delay(10);
   }
   
+}
+
+void sendDataToESP32() {
+  Serial.println("{\"Sleepiness\": ");
+  Serial.println(sleep);
+  Serial.println(", \"Happiness\": ");
+  Serial.println(happiness);
+  Serial.println("}");
 }
 
 void stateSelection() {
@@ -633,7 +649,7 @@ void displayAge(){
   display.setTextColor(SSD1306_BLACK, SSD1306_WHITE);
   display.print("Name");
   display.setTextColor(SSD1306_WHITE);
-  display.println(" Asnelandre");
+  display.println(" Tasigen");
   
   display.setCursor(10,32);
   display.setTextColor(SSD1306_BLACK, SSD1306_WHITE);
